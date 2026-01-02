@@ -19,8 +19,7 @@
         body { background: var(--bg-dark); color: #fff; font-family: 'Poppins', sans-serif; overflow-x: hidden; }
 
         .stars { position: fixed; inset: 0; z-index: 0; background: radial-gradient(circle at center, #1b263b 0%, #0d1b2a 100%); }
-
-        .varal { position: fixed; top: 0; width: 100%; height: 60px; display: flex; justify-content: space-around; z-index: 5; }
+        .varal { position: fixed; top: 0; width: 100%; height: 60px; display: flex; justify-content: space-around; z-index: 9999; pointer-events: none; }
         .bandeirinha { width: 25px; height: 35px; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 80%, 0% 100%); animation: sway 3s ease-in-out infinite alternate; transform-origin: top center; }
         @keyframes sway { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
 
