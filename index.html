@@ -4,236 +4,211 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="img/favicon.png">
-    <title>São João dos Miúdos</title>
+    <title>Road Trip São João 2026 - Campina Grande</title>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Open+Sans:wght@400;700&display=swap');
-
-        body {
-            margin: 0; padding: 0;
-            background: #0d1b2a;
-            color: #fff;
-            font-family: 'Open Sans', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background: radial-gradient(circle at center, #1b263b 0%, #0d1b2a 100%);
-            overflow: hidden;
+        :root {
+            --primary: #ff9e00;
+            --secondary: #780000;
+            --accent: #e9c46a;
+            --bg-dark: #0d1b2a;
+            --glass: rgba(255, 255, 255, 0.1);
         }
 
-        #varal-svg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 300px;
-            z-index: 20;
-            pointer-events: none;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg-dark); color: #fff; font-family: 'Poppins', sans-serif; overflow-x: hidden; }
+
+        .stars { position: fixed; inset: 0; z-index: 0; background: radial-gradient(circle at center, #1b263b 0%, #0d1b2a 100%); }
+
+        .varal { position: fixed; top: 0; width: 100%; height: 60px; display: flex; justify-content: space-around; z-index: 5; }
+        .bandeirinha { width: 25px; height: 35px; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 80%, 0% 100%); animation: sway 3s ease-in-out infinite alternate; transform-origin: top center; }
+        @keyframes sway { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
+
+        @keyframes revealUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        .bandeirinha {
-            position: absolute;
-            width: 30px;
-            height: 42px;
-            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 80%, 0% 100%);
-            z-index: 21;
-            transform-origin: top center;
+        .animate-in { opacity: 0; }
+        .visible .animate-in { animation: revealUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .delay-1 { animation-delay: 0.2s !important; }
+        .delay-2 { animation-delay: 0.4s !important; }
+        .delay-3 { animation-delay: 0.6s !important; }
+
+        #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 1s ease-in-out; }
+        #btn-entrar { padding: 20px 50px; font-family: 'Luckiest Guy'; font-size: 2.5rem; background: var(--primary); color: var(--secondary); border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 0 #b36f00; transition: 0.3s; }
+
+        .container { position: relative; z-index: 10; max-width: 1000px; margin: 0 auto; padding: 80px 20px 40px; text-align: center; display: none; }
+        h1 { font-family: 'Luckiest Guy'; font-size: clamp(2.5rem, 8vw, 4.5rem); color: var(--primary); text-shadow: 4px 4px 0 var(--secondary); margin-bottom: 10px; }
+
+        .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 40px 0; }
+        .timer-card { background: var(--glass); backdrop-filter: blur(10px); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        .num { font-family: 'Luckiest Guy'; font-size: 3rem; color: #fff; display: block; }
+        .label { font-size: 0.8rem; color: var(--primary); text-transform: uppercase; display: block; }
+
+        .city-info { display: grid; grid-template-columns: 1fr 1.5fr; gap: 30px; text-align: left; margin-top: 50px; background: rgba(0,0,0,0.4); padding: 30px; border-radius: 20px; }
+        .weather-box { background: var(--secondary); padding: 20px; border-radius: 15px; text-align: center; height: fit-content; }
+        .temp { font-size: 3.5rem; font-weight: bold; margin: 10px 0; }
+        
+        .insta-embed { 
+            margin-top: 20px; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            border: 1px solid var(--primary);
+            background: #fff;
         }
 
-        .balanco-anim {
-            animation: balanco 3s ease-in-out infinite alternate;
-        }
+        .city-details h2 { font-family: 'Luckiest Guy'; color: var(--primary); margin-bottom: 15px; }
+        .city-details p { font-size: 0.95rem; line-height: 1.6; margin-bottom: 15px; }
+        .city-highlights { font-size: 0.85rem; color: var(--accent); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 25px; }
+        .photo { width: 100%; height: 180px; background-size: cover; background-position: center; border-radius: 10px; cursor: pointer; border: 2px solid var(--accent); }
 
-        @keyframes balanco {
-            from { transform: rotate(-3deg); }
-            to { transform: rotate(3deg); }
+        #lightbox {
+            position: fixed; inset: 0; background: rgba(0,0,0,0); backdrop-filter: blur(0px); z-index: 2000;
+            display: flex; justify-content: center; align-items: center; pointer-events: none;
+            transition: background 0.5s ease, backdrop-filter 0.5s ease, opacity 0.5s; opacity: 0;
         }
-
-        #overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 100;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        #lightbox.active { background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); opacity: 1; }
+        #lightbox img {
+            max-width: 85%; max-height: 85%; border-radius: 15px; box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            transform: scale(0.8); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        #lightbox.active img { transform: scale(1); }
 
-        #btn-entrar {
-            padding: 20px 50px;
-            font-family: 'Luckiest Guy', cursive;
-            font-size: 2.5rem;
-            background: #ff9e00;
-            color: #780000;
-            border: 4px solid #780000;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(255,158,0,0.6);
-        }
-
-        .container {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            display: none;
-        }
-
-        h1 {
-            font-family: 'Luckiest Guy', cursive;
-            font-size: 4rem;
-            color: #ff9e00;
-            text-shadow: 4px 4px 0px #780000;
-        }
-
-        .countdown-wrapper {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .box {
-            background: #582f0e;
-            border: 4px solid #7f4f24;
-            border-radius: 12px;
-            min-width: 100px;
-            padding: 15px;
-            box-shadow: 0 8px 0 #331a06;
-        }
-
-        .number {
-            display: block;
-            font-size: 3rem;
-            font-family: 'Luckiest Guy', sans-serif;
-        }
-
-        .balao-clonado {
-            position: absolute;
-            bottom: -150px;
-            opacity: 0.5;
-            z-index: 1;
-            animation: subir linear forwards;
-        }
-
-        @keyframes subir {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(-130vh) rotate(30deg); }
-        }
-
-        @media (max-width: 600px) {
-            h1 { font-size: 2.5rem; }
-            .bandeirinha { width: 20px; height: 30px; }
+        @media (max-width: 768px) {
+            .countdown-grid { grid-template-columns: repeat(2, 1fr); }
+            .city-info { grid-template-columns: 1fr; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .photo { height: 250px; }
         }
     </style>
 </head>
 <body>
 
-    <div id="overlay">
-        <button id="btn-entrar">ENTRAR</button>
+    <div class="stars"></div>
+    <div class="varal" id="varal"></div>
+
+    <div id="lightbox">
+        <img src="" id="lightbox-img">
     </div>
 
-    <svg id="varal-svg">
-        <path id="corda-path" d="" fill="transparent" stroke="#582f0e" stroke-width="4" />
-    </svg>
+    <div id="overlay">
+        <h2 style="color:white; margin-bottom:20px; font-family:'Luckiest Guy'">CAMPINA GRANDE NOS ESPERA!</h2>
+        <button id="btn-entrar">BORA PRA FESTA</button>
+    </div>
 
-    <audio id="musica-fundo" loop>
-        <source src="img/Ritmo da Sanfoninha.mp3" type="audio/mpeg">
+    <audio id="bg-music" loop>
+        <source src="/img/Ritmo da Sanfoninha.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="container" id="conteudo-site">
-        <h1>ROAD TRIP SÃO JOÃO 2026</h1>
-        <p style="color: #e9c46a; font-size: 1.5rem; font-weight: bold;">A festa dos Miúdos começa em: </p>
-
-        <div class="countdown-wrapper">
-            <div class="box"><span class="number" id="days">00</span><span>Dias</span></div>
-            <div class="box"><span class="number" id="hours">00</span><span>Horas</span></div>
-            <div class="box"><span class="number" id="minutes">00</span><span>Mins</span></div>
-            <div class="box"><span class="number" id="seconds">00</span><span>Segs</span></div>
+    <div class="container" id="main-content">
+        <div class="animate-in">
+            <h1>SÃO JOÃO 2026</h1>
+            <p style="color: var(--accent); letter-spacing: 2px;">O MAIOR DO MUNDO COMEÇA EM:</p>
         </div>
+
+        <div class="countdown-grid animate-in delay-1">
+            <div class="timer-card"><span class="num" id="d">00</span><span class="label">Dias</span></div>
+            <div class="timer-card"><span class="num" id="h">00</span><span class="label">Horas</span></div>
+            <div class="timer-card"><span class="num" id="m">00</span><span class="label">Minutos</span></div>
+            <div class="timer-card"><span class="num" id="s">00</span><span class="label">Segundos</span></div>
+        </div>
+
+        <section class="city-info animate-in delay-2">
+            <div class="weather-box">
+                <h3 style="font-family:'Luckiest Guy'; color: var(--primary);">CLIMA EM CG</h3>
+                <div class="temp">33°C</div>
+                <p>Céu limpo e sol forte</p>
+                <small>Noites frescas de 22°C</small>
+
+                <div class="insta-embed">
+                    <iframe src="https://www.instagram.com/maiorsjdomundo/embed" width="100%" height="400" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
+                </div>
+            </div>
+
+            <div class="city-details">
+                <h2>RAINHA DA BORBOREMA</h2>
+                <p>
+                    Conhecida pelo seu clima agradável e hospitalidade, Campina Grande se transforma em junho. O <b>Parque do Povo</b> é o coração da festa, com mais de 40 mil m² dedicados ao forró, quadrilhas e fogueiras.
+                </p>
+                <p>
+                    Não deixe de provar o autêntico <b>Rubacão</b> e a <b>Carne de Sol com Macaxeira</b> enquanto aproveita os shows. Entre os polos de destaque estão a Vila do Artesão e o <b>Parque do Povo</b>.
+                </p>
+                <span class="city-highlights">#MaiorSJdoMundo</span>
+                
+                <div class="gallery">
+                    <div class="gallery-grid">
+                        <div class="photo animate-in delay-3" style="background-image: url('https://souljoao.com.br/fotos/ALY00845.jpg')" onmouseenter="abrirFoto(this)" onmouseleave="fecharFoto()"></div>
+                        <div class="photo animate-in delay-3" style="background-image: url('https://souljoao.com.br/fotos/ALY04269.jpg')" onmouseenter="abrirFoto(this)" onmouseleave="fecharFoto()"></div>
+                        <div class="photo animate-in delay-3" style="background-image: url('https://omaiorsjdomundo.com.br/wp-content/uploads/2025/04/19.png')" onmouseenter="abrirFoto(this)" onmouseleave="fecharFoto()"></div>
+                         <div class="photo animate-in delay-3" style="background-image: url('https://souljoao.com.br/fotos/VNSI6236.jpg')" onmouseenter="abrirFoto(this)" onmouseleave="fecharFoto()"></div>
+                        <div class="photo animate-in delay-3" style="background-image: url('https://souljoao.com.br/fotos/VNSI6541.jpg')" onmouseenter="abrirFoto(this)" onmouseleave="fecharFoto()"></div>
+                        <div class="photo animate-in delay-3" style="background-image: url('https://omaiorsjdomundo.com.br/wp-content/uploads/2025/04/1-1.png')" onmouseenter="abrirFoto(this)" onmouseleave="fecharFoto()"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
     <script>
-        const cores = ['#ff4d4d', '#ffcc00', '#33cc33', '#3399ff', '#ff66cc'];
+        function criarBandeirinhas() {
+            const varal = document.getElementById('varal');
+            varal.innerHTML = '';
+            const colors = ['#ff4d4d', '#ffcc00', '#33cc33', '#3399ff', '#ff66cc'];
+            const quantidade = window.innerWidth < 768 ? 10 : 22;
 
-        function desenharVaral() {
-            const path = document.getElementById('corda-path');
-            const w = window.innerWidth;
-            const curveHeight = 100;
-            
-            const d = `M -10 0 Q ${w/2} ${curveHeight * 2} ${w + 10} 0`;
-            path.setAttribute('d', d);
-
-            document.querySelectorAll('.bandeirinha').forEach(b => b.remove());
-
-            const totalPathLength = path.getTotalLength();
-            const step = 45;
-            const numBandeirinhas = Math.floor(totalPathLength / step);
-
-            for (let i = 1; i < numBandeirinhas; i++) {
-                const distance = i * step;
-                const point = path.getPointAtLength(distance);
-                const prevPoint = path.getPointAtLength(distance - 1);
-
+            for (let i = 0; i < quantidade; i++) {
                 const b = document.createElement('div');
-                b.className = 'bandeirinha balanco-anim';
-                b.style.background = cores[i % cores.length];
-                
-                b.style.left = `${point.x - 15}px`;
-                b.style.top = `${point.y}px`;
-
-                const angle = Math.atan2(point.y - prevPoint.y, point.x - prevPoint.x) * (180 / Math.PI);
-                b.style.transform = `rotate(${angle}deg)`;
-                
-                document.body.appendChild(b);
+                b.className = 'bandeirinha';
+                b.style.background = colors[i % colors.length];
+                b.style.animationDelay = `${i * 0.15}s`;
+                varal.appendChild(b);
             }
         }
 
-        window.addEventListener('resize', desenharVaral);
-        desenharVaral();
-
-        const btn = document.getElementById('btn-entrar');
-        const musica = document.getElementById('musica-fundo');
-        const overlay = document.getElementById('overlay');
-        const conteudo = document.getElementById('conteudo-site');
-
-        function criarBalao() {
-            const balao = document.createElement('img');
-            balao.src = 'img/balao.png';
-            balao.className = 'balao-clonado';
-            balao.style.left = Math.random() * 90 + '%';
-            const tamanho = Math.random() * 30 + 30;
-            balao.style.width = tamanho + 'px';
-            const duracao = Math.random() * 10 + 15;
-            balao.style.animationDuration = duracao + 's';
-            document.body.appendChild(balao);
-            setTimeout(() => { balao.remove(); }, duracao * 1000);
+        const targetDate = new Date("June 24, 2026 00:00:00").getTime();
+        function updateTimer() {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+            if (diff > 0) {
+                document.getElementById('d').innerText = Math.floor(diff / 86400000).toString().padStart(2, '0');
+                document.getElementById('h').innerText = Math.floor((diff % 86400000) / 3600000).toString().padStart(2, '0');
+                document.getElementById('m').innerText = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+                document.getElementById('s').innerText = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+            }
         }
 
-        btn.addEventListener('click', () => {
-            musica.volume = 0.1; 
-            musica.play();
-            overlay.style.display = 'none';
-            conteudo.style.display = 'block';
-            setInterval(criarBalao, 3500);
-            criarBalao();
+        function abrirFoto(elemento) {
+            const url = elemento.style.backgroundImage.slice(5, -2).replace(/"/g, "");
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            img.src = url;
+            lightbox.classList.add('active');
+        }
+
+        function fecharFoto() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        document.getElementById('btn-entrar').addEventListener('click', () => {
+            const overlay = document.getElementById('overlay');
+            const main = document.getElementById('main-content');
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                main.style.display = 'block';
+                setTimeout(() => main.classList.add('visible'), 50);
+            }, 1000);
+            document.getElementById('bg-music').play();
+            document.getElementById('bg-music').volume = 0.1;
         });
 
-        const target = new Date("June 24, 2026 00:00:00").getTime();
-        function update() {
-            const now = new Date().getTime();
-            const diff = target - now;
-            if (diff > 0) {
-                document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-                document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-                document.getElementById('minutes').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-                document.getElementById('seconds').innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
-            }
-        }
-        setInterval(update, 1000);
-        update();
+        window.addEventListener('resize', criarBandeirinhas);
+        criarBandeirinhas();
+        setInterval(updateTimer, 1000);
+        updateTimer();
     </script>
 </body>
-
 </html>
-
