@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="img/favicon.png">
+    <link rel="icon" href="/assets/img/favicon.png">
     <title>Road Trip São João 2026 - Campina Grande</title>
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
@@ -100,7 +100,7 @@
     </div>
 
     <audio id="bg-music" loop>
-        <source src="/img/Ritmo da Sanfoninha.mp3" type="audio/mpeg">
+        <source src="/assets/musicas/Se Rei pra Lá.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container" id="main-content">
@@ -229,8 +229,11 @@
             }, 1000);
             
             const music = document.getElementById('bg-music');
+            
+            music.currentTime = 62;  
+                      
             music.play();
-            music.volume = 0.1;
+            music.volume = 0.06;
         });
 
         window.addEventListener('resize', criarBandeirinhas);
@@ -246,4 +249,3 @@
     </script>
 </body>
 </html>
-
