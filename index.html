@@ -22,10 +22,38 @@
             overflow: hidden;
         }
 
+        #varal-svg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 300px;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .bandeirinha {
+            position: absolute;
+            width: 30px;
+            height: 42px;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 80%, 0% 100%);
+            z-index: 21;
+            transform-origin: top center;
+        }
+
+        .balanco-anim {
+            animation: balanco 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes balanco {
+            from { transform: rotate(-3deg); }
+            to { transform: rotate(3deg); }
+        }
+
         #overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             z-index: 100;
             display: flex;
             justify-content: center;
@@ -33,25 +61,15 @@
         }
 
         #btn-entrar {
-            padding: 20px 40px;
+            padding: 20px 50px;
             font-family: 'Luckiest Guy', cursive;
-            font-size: 2rem;
+            font-size: 2.5rem;
             background: #ff9e00;
             color: #780000;
-            border: none;
+            border: 4px solid #780000;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255,158,0,0.4);
-            transition: transform 0.2s;
-        }
-
-        #btn-entrar:hover { transform: scale(1.1); }
-
-        .stars {
-            position: absolute;
-            width: 100%; height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/stardust.png');
-            z-index: 0;
+            box-shadow: 0 0 20px rgba(255,158,0,0.6);
         }
 
         .container {
@@ -66,7 +84,6 @@
             font-size: 4rem;
             color: #ff9e00;
             text-shadow: 4px 4px 0px #780000;
-            margin-bottom: 10px;
         }
 
         .countdown-wrapper {
@@ -79,28 +96,34 @@
         .box {
             background: #582f0e;
             border: 4px solid #7f4f24;
-            border-radius: 10px;
+            border-radius: 12px;
             min-width: 100px;
-            padding: 20px;
+            padding: 15px;
+            box-shadow: 0 8px 0 #331a06;
         }
 
         .number {
             display: block;
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-family: 'Luckiest Guy', sans-serif;
         }
 
-        .balao {
+        .balao-clonado {
             position: absolute;
-            width: 60px;
-            bottom: -100px;
-            animation: subir 15s linear infinite;
-            opacity: 0.7;
+            bottom: -150px;
+            opacity: 0.5;
+            z-index: 1;
+            animation: subir linear forwards;
         }
 
         @keyframes subir {
-            0% { transform: translateY(0) rotate(0deg); left: 10%; }
-            100% { transform: translateY(-120vh) rotate(20deg); left: 20%; }
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-130vh) rotate(30deg); }
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2.5rem; }
+            .bandeirinha { width: 20px; height: 30px; }
         }
     </style>
 </head>
@@ -110,16 +133,17 @@
         <button id="btn-entrar">ENTRAR</button>
     </div>
 
-        <audio id="musica-fundo" loop>
-            <source src="/img/Ritmo da Sanfoninha.mp3" type="audio/mpeg">
-        </audio>
+    <svg id="varal-svg">
+        <path id="corda-path" d="" fill="transparent" stroke="#582f0e" stroke-width="4" />
+    </svg>
 
-    <div class="stars"></div>
-    <img src="/img/balao.png" class="balao" alt="balão">
+    <audio id="musica-fundo" loop>
+        <source src="Ritmo da Sanfoninha.mp3" type="audio/mpeg">
+    </audio>
 
     <div class="container" id="conteudo-site">
         <h1>ROAD TRIP SÃO JOÃO 2026</h1>
-        <p style="color: #e9c46a; font-size: 1.5rem;">A festa dos Miúdos acontece em: </p>
+        <p style="color: #e9c46a; font-size: 1.5rem; font-weight: bold;">A festa dos Miúdos começa em: </p>
 
         <div class="countdown-wrapper">
             <div class="box"><span class="number" id="days">00</span><span>Dias</span></div>
@@ -130,31 +154,84 @@
     </div>
 
     <script>
+        const cores = ['#ff4d4d', '#ffcc00', '#33cc33', '#3399ff', '#ff66cc'];
+
+        function desenharVaral() {
+            const path = document.getElementById('corda-path');
+            const w = window.innerWidth;
+            const curveHeight = 100;
+            
+            const d = `M -10 0 Q ${w/2} ${curveHeight * 2} ${w + 10} 0`;
+            path.setAttribute('d', d);
+
+            document.querySelectorAll('.bandeirinha').forEach(b => b.remove());
+
+            const totalPathLength = path.getTotalLength();
+            const step = 45;
+            const numBandeirinhas = Math.floor(totalPathLength / step);
+
+            for (let i = 1; i < numBandeirinhas; i++) {
+                const distance = i * step;
+                const point = path.getPointAtLength(distance);
+                const prevPoint = path.getPointAtLength(distance - 1);
+
+                const b = document.createElement('div');
+                b.className = 'bandeirinha balanco-anim';
+                b.style.background = cores[i % cores.length];
+                
+                b.style.left = `${point.x - 15}px`;
+                b.style.top = `${point.y}px`;
+
+                const angle = Math.atan2(point.y - prevPoint.y, point.x - prevPoint.x) * (180 / Math.PI);
+                b.style.transform = `rotate(${angle}deg)`;
+                
+                document.body.appendChild(b);
+            }
+        }
+
+        window.addEventListener('resize', desenharVaral);
+        desenharVaral();
+
         const btn = document.getElementById('btn-entrar');
         const musica = document.getElementById('musica-fundo');
         const overlay = document.getElementById('overlay');
         const conteudo = document.getElementById('conteudo-site');
-        
+
+        function criarBalao() {
+            const balao = document.createElement('img');
+            balao.src = 'img/balao.png';
+            balao.className = 'balao-clonado';
+            balao.style.left = Math.random() * 90 + '%';
+            const tamanho = Math.random() * 30 + 30;
+            balao.style.width = tamanho + 'px';
+            const duracao = Math.random() * 10 + 15;
+            balao.style.animationDuration = duracao + 's';
+            document.body.appendChild(balao);
+            setTimeout(() => { balao.remove(); }, duracao * 1000);
+        }
+
         btn.addEventListener('click', () => {
-        musica.volume = 0.1; 
-        
-        musica.play();
-        overlay.style.display = 'none';
-        conteudo.style.display = 'block';
-    });
+            musica.volume = 0.2; 
+            musica.play();
+            overlay.style.display = 'none';
+            conteudo.style.display = 'block';
+            setInterval(criarBalao, 3500);
+            criarBalao();
+        });
 
         const target = new Date("June 24, 2026 00:00:00").getTime();
         function update() {
             const now = new Date().getTime();
             const diff = target - now;
-            document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
-            document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            document.getElementById('minutes').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            document.getElementById('seconds').innerText = Math.floor((diff % (1000 * 60)) / 1000);
+            if (diff > 0) {
+                document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+                document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                document.getElementById('minutes').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                document.getElementById('seconds').innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            }
         }
         setInterval(update, 1000);
         update();
     </script>
 </body>
-
 </html>
