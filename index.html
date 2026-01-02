@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="img/favicon.png">
+    <link rel="icon" href="img/favicon.png">
     <title>São João dos Miúdos</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Open+Sans:wght@400;700&display=swap');
 
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background: #0d1b2a;
             color: #fff;
             font-family: 'Open Sans', sans-serif;
@@ -23,10 +22,34 @@
             overflow: hidden;
         }
 
+        #overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #btn-entrar {
+            padding: 20px 40px;
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 2rem;
+            background: #ff9e00;
+            color: #780000;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255,158,0,0.4);
+            transition: transform 0.2s;
+        }
+
+        #btn-entrar:hover { transform: scale(1.1); }
+
         .stars {
             position: absolute;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             background: url('https://www.transparenttextures.com/patterns/stardust.png');
             z-index: 0;
         }
@@ -35,6 +58,7 @@
             position: relative;
             z-index: 10;
             text-align: center;
+            display: none;
         }
 
         h1 {
@@ -43,13 +67,6 @@
             color: #ff9e00;
             text-shadow: 4px 4px 0px #780000;
             margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-
-        p.sub {
-            font-size: 1.5rem;
-            margin-bottom: 40px;
-            color: #e9c46a;
         }
 
         .countdown-wrapper {
@@ -65,22 +82,12 @@
             border-radius: 10px;
             min-width: 100px;
             padding: 20px;
-            box-shadow: 0 8px 0 #331a06;
         }
 
         .number {
             display: block;
             font-size: 3.5rem;
-            font-weight: bold;
             font-family: 'Luckiest Guy', sans-serif;
-            color: #f1faee;
-        }
-
-        .label {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            color: #a98467;
-            font-weight: bold;
         }
 
         .balao {
@@ -95,65 +102,58 @@
             0% { transform: translateY(0) rotate(0deg); left: 10%; }
             100% { transform: translateY(-120vh) rotate(20deg); left: 20%; }
         }
-
-        @media (max-width: 600px) {
-            h1 { font-size: 2.5rem; }
-            .box { min-width: 70px; padding: 10px; }
-            .number { font-size: 2rem; }
-        }
     </style>
 </head>
 <body>
+
+    <div id="overlay">
+        <button id="btn-entrar">ENTRAR</button>
+    </div>
+
+        <audio id="musica-fundo" loop>
+            <source src="/img/Ritmo da Sanfoninha.mp3" type="audio/mpeg">
+        </audio>
+
     <div class="stars"></div>
-    
     <img src="/img/balao.png" class="balao" alt="balão">
 
-    <div class="container">
-        <h1>SÃO JOÃO 2026</h1>
-        <p class="sub">A festa dos Miúdos acontece em: 🔥</p>
+    <div class="container" id="conteudo-site">
+        <h1>ROAD TRIP SÃO JOÃO 2026</h1>
+        <p style="color: #e9c46a; font-size: 1.5rem;">A festa dos Miúdos acontece em: 🔥</p>
 
         <div class="countdown-wrapper">
-            <div class="box">
-                <span class="number" id="days">00</span>
-                <span class="label">Dias</span>
-            </div>
-            <div class="box">
-                <span class="number" id="hours">00</span>
-                <span class="label">Horas</span>
-            </div>
-            <div class="box">
-                <span class="number" id="minutes">00</span>
-                <span class="label">Mins</span>
-            </div>
-            <div class="box">
-                <span class="number" id="seconds">00</span>
-                <span class="label">Segs</span>
-            </div>
+            <div class="box"><span class="number" id="days">00</span><span>Dias</span></div>
+            <div class="box"><span class="number" id="hours">00</span><span>Horas</span></div>
+            <div class="box"><span class="number" id="minutes">00</span><span>Mins</span></div>
+            <div class="box"><span class="number" id="seconds">00</span><span>Segs</span></div>
         </div>
     </div>
 
     <script>
-        const target = new Date("June 24, 2026 00:00:00").getTime();
+        const btn = document.getElementById('btn-entrar');
+        const musica = document.getElementById('musica-fundo');
+        const overlay = document.getElementById('overlay');
+        const conteudo = document.getElementById('conteudo-site');
+        
+        btn.addEventListener('click', () => {
+        musica.volume = 0.1; 
+        
+        musica.play();
+        overlay.style.display = 'none';
+        conteudo.style.display = 'block';
+    });
 
+        const target = new Date("June 24, 2026 00:00:00").getTime();
         function update() {
             const now = new Date().getTime();
             const diff = target - now;
-
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
-
-            document.getElementById('days').innerText = d;
-            document.getElementById('hours').innerText = h;
-            document.getElementById('minutes').innerText = m;
-            document.getElementById('seconds').innerText = s;
+            document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+            document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            document.getElementById('minutes').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('seconds').innerText = Math.floor((diff % (1000 * 60)) / 1000);
         }
-
         setInterval(update, 1000);
         update();
     </script>
 </body>
-
 </html>
-
